@@ -5,6 +5,10 @@ import re
 from pylibelf import pylibelf as libelf
 from pylibelf import elfconstants, elfutils
 
+COMMAND_LIST = [
+    r"^(disass) ([\w\d_]+)$" # disassemble a function
+]
+
 def getSymbolTable(elf):
     symtabSection = elf.getSectionByName(elfconstants.ELF_SECTION_TYPES['SHT_SYMTAB'])
     return libelf.Elf_SymbolTable.parse(elfutils.ReadData(symtabSection.sectionRawData), elf.getType().value)
@@ -12,14 +16,18 @@ def getSymbolTable(elf):
 def printHelp():
     print "-h hihi"
 
-def getParameter(command, pattern):
-    m = re.match(command, pattern)
-    if m is None:
-        return None
-    return m.groups()
+def getParameter(command):
+    for pattern in COMMAND_LIST:
+        m = re.match(command, pattern)
+        if (m is not None):
+            return m.groups()
+    return None
 
 def handle(filePath):
     elf = libelf.ELF(filePath)
+    arch = elf.elfHdr.e_machine
+    
+    if (arch == elfconstants.ELF_MACHINE_TYPES[])
     print "Welcome to BasicDisass, please type 'help' to get more information!"
 
     while True:
