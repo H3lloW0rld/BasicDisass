@@ -1,9 +1,35 @@
-from elftools.elf.elffile import ELFFile
-
+import sys
 import os
+import re
 
-print os.getcwd()
+from pylibelf import pylibelf as libelf
+from pylibelf import elfconstants, elfutils
 
-with open('uaf32', 'rb') as file:
-    e = ELFFile(file)
-    print e.get_section_by_name('.symtab').get_symbol_by_name('main')
+def getSymbolTable(elf):
+    symtabSection = elf.getSectionByName(elfconstants.ELF_SECTION_TYPES['SHT_SYMTAB'])
+    return libelf.Elf_SymbolTable.parse(elfutils.ReadData(symtabSection.sectionRawData), elf.getType().value)
+
+def printHelp():
+    print "-h hihi"
+
+def getParameter(command, pattern):
+    m = re.match(command, pattern)
+    if m is None:
+        return None
+    return m.groups()
+
+def handle(filePath):
+    elf = libelf.ELF(filePath)
+    print "Welcome to BasicDisass, please type 'help' to get more information!"
+
+    while True:
+        command = raw_input(">> ")
+
+def main():
+    if len(sys.argv) == 2:
+        if (os.path.isfile(sys.argv[1])):
+            handle(sys.argv[1])
+        else:
+            print "File doesn't exist!"
+    else:
+        printHelp()
