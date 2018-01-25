@@ -1,3 +1,5 @@
+# Author: Nguyen Trung Khanh - 15520359
+
 import sys
 import os
 import re
